@@ -54,7 +54,7 @@ namespace OciososAnonimosBot {
                     break;
 
                 case "!blog":
-                    await ((SocketTextChannel)_client.Guilds.First().Channels.First(x => x.Name == _blogChannelName)).SendMessageAsync("Lol");
+                    await message.Channel.SendMessageAsync("Pasa a leer nuestras reseñas en https://ociososanonimos.com");
                     break;                
             }
         }
