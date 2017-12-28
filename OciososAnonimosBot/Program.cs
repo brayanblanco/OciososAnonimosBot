@@ -10,7 +10,9 @@ namespace OciososAnonimosBot {
         private DiscordSocketClient _client;
         private string _token;
         private string _blogChannelName;
-        
+
+        private bool _isOn;
+
         static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
 
         public async Task MainAsync(string[] args) {
@@ -55,8 +57,33 @@ namespace OciososAnonimosBot {
 
                 case "!blog":
                     await message.Channel.SendMessageAsync("Pasa a leer nuestras reseñas en https://ociososanonimos.com");
-                    break;                
-            }
+                    break;
+
+                case "!start":
+                    _isOn = true;
+                    SendLastPostAsync();
+                    break;
+
+                case "!stop":
+                    _isOn = false;
+                    break;
+            }   
         }
+
+        private async void SendLastPostAsync() {
+            await Task.Factory.StartNew(() => {
+                var last = string.Empty;
+
+                while (_isOn) {
+                    Console.WriteLine("lol");
+                    var temp = FeedReader.ReadLast();
+                    if (temp != last) {
+                        last = temp;
+                        ((SocketTextChannel)_client.Guilds.First().Channels.First(channel => channel.Name == _blogChannelName)).SendMessageAsync(last);
+                    }
+                }
+            });                
+        }
+        
     }
 }
